@@ -16,6 +16,8 @@ onnx_model = onnx.load(onnx_model_path)
 onnx.checker.check_model(onnx_model)
 ort_session = ort.InferenceSession(onnx_model_path)
 input_data,sr = sf.read('output_16000.wav')
+if sr!=16000:raise 'Only supports 16000 Hz'
+if input_data.ndim>1:raise 'Only supports 1 channel'
 input_data = np.expand_dims(input_data, axis=0).astype(np.float32)
 input_name = ort_session.get_inputs()[0].name
 outputs = ort_session.run(None, {input_name: input_data})
